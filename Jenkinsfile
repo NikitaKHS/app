@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // Сборка Docker-образа
-                    docker.build('ваше_имя_образа')
+                    docker.build('Dockerfile')
                 }
             }
         }
@@ -15,8 +15,8 @@ pipeline {
             steps {
                 script {
                     // Запуск тестов в контейнере
-                    docker.image('ваше_имя_образа').inside {
-                        sh 'ваша_команда_для_тестирования'
+                    docker.image('Dockerfile').inside {
+                        sh 'test'
                     }
                 }
             }
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     // Развертывание Docker-контейнера
-                    docker.image('ваше_имя_образа').withRun('-p 8080:8080') {
+                    docker.image('Dockerfile').withRun('-p 8080:8080') {
                         // Дополнительные команды развертывания
                     }
                 }
