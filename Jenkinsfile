@@ -34,17 +34,15 @@ pipeline {
             }
         }
 
-        // Этап 4: Развертывание на удаленном сервере
-        stage('Deploy to Remote Server') {
-            steps {
-                script {
-                    // Развертывание Docker-образа на удаленном сервере с использованием SSH
-                    sshagent(['your-ssh-credentials']) {
-                        sh "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJ6oXNuA5QaaaQENIGWcwxg7sEOOYukKd6YVuQ8YNkE askkh@Qvim 'docker pull ${env.DOCKER_IMAGE} && docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}'"
+        stage('Deploy Locally') {
+                    steps {
+                        script {
+                            // Развертывание Docker-образа локально
+                            sh "docker run -d -p 8080:8080 ${DOCKER_IMAGE}"
+                        }
                     }
                 }
             }
-        }
 
         // Добавьте дополнительные этапы по вашему усмотрению
 
