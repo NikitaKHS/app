@@ -48,7 +48,7 @@ pipeline {
                         res.send('<pre>' + dogArt + '</pre><p>Это собачка</p>');
                     });
 
-                    const port = process.env.PORT || 3000;
+                    const port = process.env.PORT || 8081;
                     app.listen(port, () => {
                         console.log('Сервер запущен на порту ' + port);
                     });
