@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     // Развертывание Docker-образа локально
-                    sh "docker run -d -p 8080:8080 ${DOCKER_IMAGE}"
+                    sh "docker run -d -p 8081:8080 ${DOCKER_IMAGE}"
                 }
             }
         }
