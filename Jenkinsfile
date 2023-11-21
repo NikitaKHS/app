@@ -15,23 +15,6 @@ pipeline {
             }
         }
 
-        stage('Create ASCII Art File') {
-    steps {
-        script {
-            echo " / \\__"
-            echo "(    @\\___"
-            echo " /         O"
-            echo "/   (_____ /"
-            echo "/_____/   U"
-            sh 'echo " / \\__" > /path/to/your/project/dog.txt'
-            sh 'echo "(    @\\___" >> /path/to/your/project/dog.txt'
-            sh 'echo " /         O" >> /path/to/your/project/dog.txt'
-            sh 'echo "/   (_____ /" >> /path/to/your/project/dog.txt'
-            sh 'echo "/_____/   U" >> /path/to/your/project/dog.txt'
-        }
-    }
-}
-
         stage('Deploy Locally') {
             steps {
                 script {
