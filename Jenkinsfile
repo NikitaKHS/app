@@ -15,11 +15,44 @@ pipeline {
             }
         }
 
-        stage('Deploy Locally') {
+        stage('Create ASCII Art File') {
             steps {
                 script {
-                    // Развертывание Docker-образа локально
-                    sh "docker run -d -p 8081:8080 ${DOCKER_IMAGE}"
+                    // Создание файла с ASCII-арт собачкой
+                    echo " / \\__" > /path/to/your/project/dog.txt
+                    echo "(    @\\___" >> /path/to/your/project/dog.txt
+                    echo " /         O" >> /path/to/your/project/dog.txt
+                    echo "/   (_____ /" >> /path/to/your/project/dog.txt
+                    echo "/_____/   U" >> /path/to/your/project/dog.txt
+                }
+            }
+        }
+
+        stage('Create Express App File') {
+            steps {
+                script {
+                    // Создание файла с вашим кодом Express приложения
+                    echo """
+                    const express = require('express');
+                    const app = express();
+
+                    app.get('/', (req, res) => {
+                        const dogArt = '
+                          / \\__
+                         (    @\\\\___
+                         /         O
+                        /   (_____ /
+                        /_____/   U
+                        ';
+
+                        res.send('<pre>' + dogArt + '</pre><p>Это собачка</p>');
+                    });
+
+                    const port = process.env.PORT || 3000;
+                    app.listen(port, () => {
+                        console.log('Сервер запущен на порту ' + port);
+                    });
+                    """ > /path/to/your/project/app.js
                 }
             }
         }
