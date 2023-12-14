@@ -6,6 +6,13 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                // Шаг для проверки кода из репозитория
+                checkout scm
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -35,4 +42,3 @@ pipeline {
             sh "docker rm \$(docker ps -aq)"
         }
     }
-}
