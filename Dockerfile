@@ -1,6 +1,7 @@
 # Используем образ Node.js
 FROM node:14
 
+WORKDIR /app
 # Устанавливаем директорию приложения внутри контейнера
 WORKDIR /usr/src/app
 
@@ -13,8 +14,6 @@ RUN npm install
 # Копируем исходный код приложения
 COPY . .
 
-# Открываем порт 3000
-EXPOSE 3000
+EXPOSE 8080
 
-# Команда для запуска приложения
-CMD ["node", "app.js"]
+CMD ["npm", "app.js"]
