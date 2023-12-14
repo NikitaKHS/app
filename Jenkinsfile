@@ -13,27 +13,19 @@ pipeline {
             steps {
                 echo '--- Building and Deploying to Docker ---'
                 script {
-                    docker.image("node:14").inside {
-                        sh 'pwd'
-                        sh 'ls -la'
+                    // Устанавливаем права для директории кеша npm
+                    sh 'mkdir -p /usr/src/app/.npm/_locks'
+                    sh 'chmod -R 777 /usr/src/app/.npm'
 
-                        // Клонируем ваш репозиторий
-                        sh 'git clone https://github.com/NikitaKHS/app.git'
-                        
-                        // Перемещаемся в директорию с клонированным кодом
-                        dir('app') {
-                            sh 'pwd'
-                            sh 'ls -la'
+                    // Устанавливаем глобальный кеш npm внутри директории проекта
+                    sh 'npm config set cache /usr/src/app/.npm --global'
 
-                            // Создаем и изменяем права для директории кеша npm
-                            sh 'mkdir -p $HOME/.npm/_locks'
-                            sh 'chmod -R 777 $HOME/.npm'
+                    // Устанавливаем директорию для глобальных модулей npm
+                    sh 'npm config set prefix /usr/src/app/.npm-global'
 
-                            // Устанавливаем зависимости и запускаем приложение
-                            sh 'npm install'
-                            sh 'node app.js'
-                        }
-                    }
+                    // Устанавливаем зависимости и запускаем приложение
+                    sh 'npm install'
+                    sh 'node app.js'
                 }
             }
         }
