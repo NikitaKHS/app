@@ -9,7 +9,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Ваш код сборки Docker-образа
+                    // Шаг сборки Docker-образа
                     sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
@@ -18,8 +18,8 @@ pipeline {
         stage('Deploy Locally') {
             steps {
                 script {
-                    // Развертывание Docker-образа локально
-                    sh "docker run -d -p 8081:8080 ${DOCKER_IMAGE}"
+                    // Шаг развертывания Docker-образа локально
+                    sh "docker run -d -p 8081:3000 ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -27,7 +27,12 @@ pipeline {
 
     post {
         always {
+            // Шаг, который выполняется всегда после завершения pipeline
             echo 'Pipeline finished'
+
+            // Можно добавить дополнительные шаги, такие как очистка ресурсов, остановка контейнеров и т.д.
+            sh "docker stop \$(docker ps -aq)"
+            sh "docker rm \$(docker ps -aq)"
         }
     }
 }
