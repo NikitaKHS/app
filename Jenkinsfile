@@ -28,7 +28,18 @@ stage('Deploy to Docker') {
                 sh 'ls -la /usr/src/app'  // Проверим содержимое /usr/src/app
 
                 // Создаем и изменяем права для директории кеша npm
+                sh 'mkdir -p $HOME/.npm/_locks'
+                sh 'chmod -R 777 $HOME/.npm'
+
+                // Создаем и изменяем права для директории конфигурации npm
+                sh 'mkdir -p $HOME/.npm-global'
+                sh 'chmod -R 777 $HOME/.npm-global'
+
+                // Устанавливаем глобальный кеш npm
                 sh 'npm config set cache $HOME/.npm --global'
+                
+                // Устанавливаем директорию для глобальных модулей npm
+                sh 'npm config set prefix $HOME/.npm-global'
 
                 // Устанавливаем зависимости
                 sh 'npm install'
@@ -40,6 +51,7 @@ stage('Deploy to Docker') {
         }
     }
 }
+
 
         stage('Test') {
             steps {
