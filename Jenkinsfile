@@ -4,60 +4,32 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Получение кода из репозитория
+                echo '--- Checking out the code ---'
                 checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Deploy to Docker') {
             steps {
-                // Сборка Docker-образа
+                echo '--- Building and Deploying to Docker ---'
                 script {
-                    docker.build("testlatest:latest")
-                }
-            }
-        }
+                    docker.image("node:14").inside {
+                        sh 'pwd'
+                        sh 'ls -la'
 
-stage('Deploy to Docker') {
-    steps {
-        script {
-            echo '--- Starting Deploy to Docker ---'
-            docker.image("testlatest:latest").inside {
-                echo '--- Inside the Docker container ---'
-                sh 'pwd'
-                sh 'ls -la /usr/src/app'  // Проверим содержимое /usr/src/app
+                        // Клонируем ваш репозиторий
+                        sh 'git clone https://github.com/NikitaKHS/app.git'
+                        
+                        // Перемещаемся в директорию с клонированным кодом
+                        dir('app') {
+                            sh 'pwd'
+                            sh 'ls -la'
 
-                // Создаем и изменяем права для директории кеша npm
-                sh 'mkdir -p $HOME/.npm/_locks'
-                sh 'chmod -R 777 $HOME/.npm'
-
-                // Создаем и изменяем права для директории конфигурации npm
-                sh 'mkdir -p $HOME/.npm-global'
-                sh 'chmod -R 777 $HOME/.npm-global'
-
-                // Устанавливаем глобальный кеш npm
-                sh 'npm config set cache $HOME/.npm --global'
-                
-                // Устанавливаем директорию для глобальных модулей npm
-                sh 'npm config set prefix $HOME/.npm-global'
-
-                // Устанавливаем зависимости
-                sh 'npm install'
-
-                // Запускаем приложение
-                sh 'node app.js'
-            }
-            echo '--- Finished Deploy to Docker ---'
-        }
-    }
-}
-
-
-        stage('Test') {
-            steps {
-                // Ваши шаги для тестирования приложения, например, npm test
-                script {
-                    sh 'npm test'
+                            // Устанавливаем зависимости и запускаем приложение
+                            sh 'npm install'
+                            sh 'node app.js'
+                        }
+                    }
                 }
             }
         }
