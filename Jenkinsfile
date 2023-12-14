@@ -13,7 +13,7 @@ pipeline {
             steps {
                 // Сборка Docker-образа
                 script {
-                    docker.build("testLatest:latest")
+                    docker.build("testlatest:latest")
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 // Развертывание Docker-контейнера
                 script {
-                    docker.image("testLatest:latest").withRun('-p 3000:3000')
+                    docker.image("testlatest:latest").withRun('-p 3000:3000')
                 }
             }
         }
