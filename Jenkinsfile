@@ -19,13 +19,13 @@ pipeline {
         }
 
         stage('Deploy to Docker') {
-            steps {
-                // Развертывание Docker-контейнера
-                script {
-                    docker.image("testlatest:latest").withRun('-p 3000:3000')
-                }
-            }
+    steps {
+        // Развертывание Docker-контейнера
+        script {
+            sh 'docker run -p 3000:3000 testlatest:latest'
         }
+    }
+}
 
         stage('Test') {
             steps {
