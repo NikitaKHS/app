@@ -21,19 +21,19 @@ pipeline {
 stage('Deploy to Docker') {
     steps {
         script {
-            echo '--- Starting npm install ---'
+            echo '--- Starting Deploy to Docker ---'
             docker.image("testlatest:latest").inside {
-                dir('/usr/src/app') {
-                    echo '--- Inside the app directory ---'
-                    sh 'ls -la'  // Проверим содержимое текущей директории
-                    sh 'npm install'
-                    sh 'node app.js'
-                }
+                echo '--- Inside the Docker container ---'
+                sh 'pwd'
+                sh 'ls -la /usr/src/app'  // Проверим содержимое /usr/src/app
+                sh 'npm install'
+                sh 'node app.js'
             }
-            echo '--- Finished npm install ---'
+            echo '--- Finished Deploy to Docker ---'
         }
     }
 }
+
 
         stage('Test') {
             steps {
