@@ -19,18 +19,19 @@ pipeline {
         }
 
         stage('Deploy to Docker') {
-    steps {
-        // Развертывание Docker-контейнера
-        script {
-            sh 'docker run -p 3000:3000 testlatest:latest'
+            steps {
+                // Развертывание Docker-контейнера
+                script {
+                    docker.image("testlatest:latest").withRun('-p 3000:3000')
+                }
+            }
         }
-    }
-}
 
         stage('Test') {
             steps {
                 // Ваши шаги для тестирования приложения, например, npm test
                 script {
+                    sh 'npm install' // Убедитесь, что устанавливаются зависимости
                     sh 'npm test'
                 }
             }
