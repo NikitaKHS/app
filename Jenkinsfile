@@ -19,16 +19,16 @@ pipeline {
         }
 
         stage('Deploy to Docker') {
-            steps {
-                // Развертывание Docker-контейнера
-                script {
-                    docker.image("testlatest:latest").inside {
-                        sh 'npm install'
-                        sh 'node app.js'
-                    }
-                }
+    steps {
+        // Развертывание Docker-контейнера
+        script {
+            docker.image("testlatest:latest").inside('--user=root') {
+                sh 'npm install --unsafe-perm=true --allow-root'
+                sh 'node app.js'
             }
         }
+    }
+}
 
         stage('Test') {
             steps {
