@@ -26,17 +26,25 @@ stage('Deploy to Docker') {
                 echo '--- Inside the Docker container ---'
                 sh 'pwd'
                 sh 'ls -la /usr/src/app'  // Проверим содержимое /usr/src/app
-                sh 'chmod -R 777 /.npm'  // Изменяем права на директорию .npm
-                sh 'mkdir -p /.npm/_locks'
-                sh 'chmod -R 777 /.npm'
+
+                // Создаем и изменяем права для директории кеша npm
+                sh 'mkdir -p $HOME/.npm/_locks'
+                sh 'chmod -R 777 $HOME/.npm'
+
+                // Устанавливаем глобальный кеш npm
                 sh 'npm config set cache $HOME/.npm --global'
+
+                // Устанавливаем зависимости
                 sh 'npm install'
+
+                // Запускаем приложение
                 sh 'node app.js'
             }
             echo '--- Finished Deploy to Docker ---'
         }
     }
 }
+
 
 
         stage('Test') {
