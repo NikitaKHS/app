@@ -22,13 +22,14 @@ pipeline {
     steps {
         // Развертывание Docker-контейнера
         script {
-            docker.image("testlatest:latest").inside {
+            docker.image("testlatest:latest").inside('--user=root') {
                 sh 'npm install' // Установка зависимостей внутри контейнера
                 sh 'node app.js'
             }
         }
     }
 }
+
 
         stage('Test') {
             steps {
