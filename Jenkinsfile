@@ -25,6 +25,10 @@ pipeline {
                             sh 'pwd'
                             sh 'ls -la'
 
+                            // Создаем и изменяем права для директории кеша npm
+                            sh 'mkdir -p $HOME/.npm/_locks'
+                            sh 'chmod -R 777 $HOME/.npm'
+
                             // Устанавливаем зависимости и запускаем приложение
                             sh 'npm install'
                             sh 'node app.js'
