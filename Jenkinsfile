@@ -19,13 +19,16 @@ pipeline {
         }
 
         stage('Deploy to Docker') {
-            steps {
-                // Развертывание Docker-контейнера
-                script {
-                    docker.image("testlatest:latest").withRun('-p 3000:3000')
-                }
+    steps {
+        // Развертывание Docker-контейнера
+        script {
+            docker.image("testlatest:latest").inside {
+                sh 'npm install' // Установка зависимостей внутри контейнера
+                sh 'node app.js'
             }
         }
+    }
+}
 
         stage('Test') {
             steps {
