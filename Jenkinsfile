@@ -26,6 +26,8 @@ stage('Deploy to Docker') {
                 echo '--- Inside the Docker container ---'
                 sh 'pwd'
                 sh 'ls -la /usr/src/app'  // Проверим содержимое /usr/src/app
+                sh 'chmod -R 777 /.npm'  // Изменяем права на директорию .npm
+                sh 'npm install'
                 sh 'npm install'
                 sh 'node app.js'
             }
