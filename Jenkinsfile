@@ -22,7 +22,8 @@ pipeline {
             steps {
                 // Развертывание Docker-контейнера
                 script {
-                    docker.image("testlatest:latest").inside('--user=root') {
+                    docker.image("testlatest:latest").inside {
+                        sh 'npm install'
                         sh 'node app.js'
                     }
                 }
