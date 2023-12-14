@@ -18,20 +18,22 @@ pipeline {
             }
         }
 
-        stage('Deploy to Docker') {
+stage('Deploy to Docker') {
     steps {
         script {
+            echo '--- Starting npm install ---'
             docker.image("testlatest:latest").inside {
-                // Переходим в рабочую директорию приложения
                 dir('/usr/src/app') {
+                    echo '--- Inside the app directory ---'
+                    sh 'ls -la'  // Проверим содержимое текущей директории
                     sh 'npm install'
                     sh 'node app.js'
                 }
             }
+            echo '--- Finished npm install ---'
         }
     }
 }
-
 
         stage('Test') {
             steps {
