@@ -29,6 +29,7 @@ stage('Deploy to Docker') {
                 sh 'chmod -R 777 /.npm'  // Изменяем права на директорию .npm
                 sh 'mkdir -p /.npm/_locks'
                 sh 'chmod -R 777 /.npm'
+                sh 'npm config set cache $HOME/.npm --global'
                 sh 'npm install'
                 sh 'node app.js'
             }
