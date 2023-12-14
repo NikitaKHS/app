@@ -1,44 +1,39 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'your-docker-image-name:latest'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                // Шаг для проверки кода из репозитория
+                // Получение кода из репозитория
                 checkout scm
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                // Сборка Docker-образа
                 script {
-                    // Шаг сборки Docker-образа
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    docker.build("testLatest:latest")
                 }
             }
         }
 
-        stage('Deploy Locally') {
+        stage('Deploy to Docker') {
             steps {
+                // Развертывание Docker-контейнера
                 script {
-                    // Шаг развертывания Docker-образа локально
-                    sh "docker run -d -p 8081:3000 ${DOCKER_IMAGE}"
+                    docker.image("testLatest:latest").withRun('-p 3000:3000')
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Ваши шаги для тестирования приложения, например, npm test
+                script {
+                    sh 'npm test'
                 }
             }
         }
     }
-
-    post {
-        always {
-            // Шаг, который выполняется всегда после завершения pipeline
-            echo 'Pipeline finished'
-
-            // Можно добавить дополнительные шаги, такие как очистка ресурсов, остановка контейнеров и т.д.
-            sh "docker stop \$(docker ps -aq)"
-            sh "docker rm \$(docker ps -aq)"
-        }
-    }
+}
