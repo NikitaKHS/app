@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        NPM_CONFIG_PREFIX = "/usr/src/app/.npm-global"
+        NPM_CONFIG_CACHE = "/usr/src/app/.npm"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -13,15 +18,15 @@ pipeline {
             steps {
                 echo '--- Building and Deploying to Docker ---'
                 script {
-                    // Устанавливаем права для директории кеша npm
-                    sh 'mkdir -p /usr/src/app/.npm/_locks'
-                    sh 'chmod -R 777 /usr/src/app/.npm'
+                    // Создаем и изменяем права для директории кеша npm
+                    sh 'mkdir -p $NPM_CONFIG_CACHE/_locks'
+                    sh 'chmod -R 777 $NPM_CONFIG_CACHE'
 
                     // Устанавливаем глобальный кеш npm внутри директории проекта
-                    sh 'npm config set cache /usr/src/app/.npm --global'
+                    sh 'npm config set cache $NPM_CONFIG_CACHE --global'
 
                     // Устанавливаем директорию для глобальных модулей npm
-                    sh 'npm config set prefix /usr/src/app/.npm-global'
+                    sh 'npm config set prefix $NPM_CONFIG_PREFIX --global'
 
                     // Устанавливаем зависимости и запускаем приложение
                     sh 'npm install'
