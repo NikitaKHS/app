@@ -19,23 +19,20 @@ pipeline {
         }
 
         stage('Deploy to Docker') {
-    steps {
-        // Развертывание Docker-контейнера
-        script {
-            docker.image("testlatest:latest").inside('--user=root') {
-                sh 'npm install' // Установка зависимостей внутри контейнера
-                sh 'node app.js'
+            steps {
+                // Развертывание Docker-контейнера
+                script {
+                    docker.image("testlatest:latest").inside('--user=root') {
+                        sh 'node app.js'
+                    }
+                }
             }
         }
-    }
-}
-
 
         stage('Test') {
             steps {
                 // Ваши шаги для тестирования приложения, например, npm test
                 script {
-                    sh 'npm install' // Убедитесь, что устанавливаются зависимости
                     sh 'npm test'
                 }
             }
