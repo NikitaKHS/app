@@ -1,13 +1,20 @@
+# Используем официальный образ Node.js как базовый образ
 FROM node:14
 
+# Устанавливаем директорию приложения внутри контейнера
 WORKDIR /usr/src/app
 
+# Копируем package.json и package-lock.json для установки зависимостей
 COPY package*.json ./
 
-RUN npm install
+# Устанавливаем зависимости
+RUN npm install --unsafe-perm=true --allow-root
 
+# Копируем код приложения
 COPY . .
 
+# Открываем порт, на котором будет работать приложение
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Команда для запуска приложения при старте контейнера
+CMD ["node", "app.js"]
