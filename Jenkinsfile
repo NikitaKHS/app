@@ -8,10 +8,13 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.build('my-docker-image:latest')
+                    docker.build('your-image-name:latest')
+                    docker.withRegistry('https://your-docker-registry', 'docker-registry-credentials') {
+                        docker.image('your-image-name:latest').push()
+                    }
                 }
             }
         }
