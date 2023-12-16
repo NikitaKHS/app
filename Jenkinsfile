@@ -1,56 +1,32 @@
 pipeline {
     agent any
-
+    environment {
+        registryCredential = 'nikitakhs'
+        sshCredential = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNYTOJ8top6J/Ni2/BXP47qx2yR39+DQgC38h96gMpk0KhpHjevPxAjFjQzMh2J/h2QQRaF3GvLMsh/5FOC+ZdFy9qyoXMF44K2sxGn9bgQc6KbjRzzAAUAq/YjxNtp5exCne86sF7OycHCY8AzqyNbC9lkJYbJ07ebdyF6Noht5oHya5t5XXUzkF3elqVklz5aPB3CWObMwMrfMpBGKgzzryRiFhv5rzV0J39UB8oqUV9zN0aYqi1MU+2igj/VIsksIME/BlT+v4bTcKzf/adm+SuPXDnkLXP9AEp8R0nRltoJw8ZQfrsvY9iymkjvk79NRAbW6s3dr6q/lCjdkFj askkh@Qvim'
+    }
     stages {
         stage('Checkout') {
             steps {
-                // Получение кода из репозитория
                 checkout scm
             }
         }
-
-        stage('Build') {
+        stage('Build and Push Docker Image') {
             steps {
-                // Сборка Node.js приложения
                 script {
-                    sh 'npm install'
+                    docker.build("nikitakhs/app")
+                    docker.withRegistry('https://registry.hub.docker.com', 'nikitakhs') {
+                        docker.image("nikitakhs/app").push()
+                    }
                 }
             }
         }
-
-        stage('Build Docker Image') {
+        stage('Deploy to Remote Server') {
             steps {
-                // Сборка Docker-образа
                 script {
-                    sh 'docker build -t my-node-app:latest .'
+                    sshagent(['your-ssh-credentials']) {
+                        sh 'ssh -o StrictHostKeyChecking=no nikita@84.201.134.218 "docker-compose up -d"'
+                    }
                 }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                // Отправка Docker-образа в Docker Hub (или другой реестр)
-                script {
-                    sh 'docker push my-node-app:latest'
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Развертывание Docker-контейнера (на вашем сервере, используя SSH, например)
-                script {
-                    // Добавьте здесь шаги для развертывания на вашем сервере
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            // Очистка ресурсов, например, остановка и удаление контейнеров
-            script {
-                sh 'docker system prune -af'
             }
         }
     }
