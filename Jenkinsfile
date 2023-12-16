@@ -1,22 +1,40 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    environment {
+        DOCKER_REPO = 'your-docker-repo'
+        DOCKER_IMAGE = "${DOCKER_REPO}/my-node-app"
+        // Другие переменные окружения, если необходимо
+    }
 
-        stage('Build and Push Docker Image') {
+    stages {
+        stage('Build') {
             steps {
                 script {
-                    docker.build('your-image-name:latest')
-                    docker.withRegistry('https://your-docker-registry', 'docker-registry-credentials') {
-                        docker.image('your-image-name:latest').push()
-                    }
+                    // Шаги сборки приложения
+                    // Например, npm install, npm build и т.д.
                 }
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Шаги сборки Docker-образа
+                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Шаги пуша Docker-образа в ваш репозиторий
+                    sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+
+        // Другие необходимые этапы вашего пайплайна
     }
 }
