@@ -1,40 +1,57 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_REPO = 'your-docker-repo'
-        DOCKER_IMAGE = "${DOCKER_REPO}/my-node-app"
-        // Другие переменные окружения, если необходимо
-    }
-
     stages {
+        stage('Checkout') {
+            steps {
+                // Получение кода из репозитория
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
+                // Сборка Node.js приложения
                 script {
-                    // Шаги сборки приложения
-                    // Например, npm install, npm build и т.д.
+                    sh 'npm install'
                 }
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                // Сборка Docker-образа
                 script {
-                    // Шаги сборки Docker-образа
-                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
+                    sh 'docker build -t my-node-app:latest .'
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
+                // Отправка Docker-образа в Docker Hub (или другой реестр)
                 script {
-                    // Шаги пуша Docker-образа в ваш репозиторий
-                    sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                    sh 'docker push my-node-app:latest'
                 }
             }
         }
 
-        // Другие необходимые этапы вашего пайплайна
+        stage('Deploy') {
+            steps {
+                // Развертывание Docker-контейнера (на вашем сервере, используя SSH, например)
+                script {
+                    // Добавьте здесь шаги для развертывания на вашем сервере
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Очистка ресурсов, например, остановка и удаление контейнеров
+            script {
+                sh 'docker system prune -af'
+            }
+        }
     }
 }
