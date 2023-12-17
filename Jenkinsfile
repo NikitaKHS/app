@@ -13,7 +13,7 @@ pipeline {
             steps {
                 script {
                     // Авторизация в Docker Hub
-                    withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'nikitakhs', passwordVariable: 'nicita.xoxlov.65')]) {
                         // Сборка Docker-образа
                         sh 'docker build -t nikitakhs/app .'
 
