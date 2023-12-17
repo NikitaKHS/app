@@ -16,7 +16,10 @@ pipeline {
                     docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
                         // Сборка Docker-образа
                         docker.image("nikitakhs/app").build()
-                        
+
+                        // Тегирование Docker-образа
+                        docker.image("nikitakhs/app").tag("latest")
+
                         // Отправка Docker-образа в Docker Hub
                         docker.image("nikitakhs/app").push()
                     }
@@ -25,7 +28,12 @@ pipeline {
         }
         stage('Deploy to Remote Server') {
             steps {
-                // Добавьте шаги развертывания на удаленный сервер по необходимости
+                script {
+                    // Используем 1 вместо your-ssh-credentials
+                    sshagent(['1']) {
+                        sh 'ssh -o StrictHostKeyChecking=no nikita@84.201.134.218 "docker-compose -f docker-compose.yml up -d"'
+                    }
+                }
             }
         }
     }
