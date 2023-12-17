@@ -1,12 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('DOCKER_HUB_CREDENTIALS')
+        JENKINS_URL = '84.201.134.218:8080'
+    }
+
     stages {
         stage('Get Crumb') {
             steps {
                 script {
-                    // Получаем CSRF-токен (crumb) и сохраняем его в переменной окружения
-                    def crumb = sh(script: 'curl -s "http://84.201.134.218:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)"', returnStdout: true).trim()
+                    def crumb = sh(script: "curl -s 'http://${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'", returnStdout: true).trim()
                     env.CRUMB = crumb
                 }
             }
@@ -15,7 +19,6 @@ pipeline {
         stage('Print Crumb') {
             steps {
                 script {
-                    // Выводим значение CSRF-токена (crumb) для проверки
                     echo "CRUMB: ${env.CRUMB}"
                 }
             }
@@ -24,16 +27,9 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    // Используем CSRF-токен (crumb) в запросах Docker
-                    def customHeaders = [[
-                        $class: 'StringParameterValue',
-                        name: 'Jenkins-Crumb',
-                        value: "${env.CRUMB}"
-                    ]]
-                    
-                    // Ваши шаги по сборке и отправке образа в Docker Hub
-                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
-                        app.build()
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
+                        // Ваши шаги по сборке и отправке образа в Docker Hub
+                        app = docker.build("nikitakhs/app:latest")
                         app.push()
                     }
                 }
