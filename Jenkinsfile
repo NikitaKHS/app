@@ -1,36 +1,36 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('DOCKER_HUB_CREDENTIALS')
-        JENKINS_URL = '84.201.134.218:8080'
-    }
-
     stages {
-        stage('Get Crumb') {
+        stage('Checkout') {
             steps {
                 script {
-                    def crumb = sh(script: "curl -s 'http://${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'", returnStdout: true).trim()
-                    env.CRUMB = crumb
+                    checkout scm
                 }
             }
         }
 
-        stage('Print Crumb') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    echo "CRUMB: ${env.CRUMB}"
+                    docker.build("nikitakhs/app:latest")
                 }
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
-                        // Ваши шаги по сборке и отправке образа в Docker Hub
-                        app = docker.build("nikitakhs/app:latest")
-                        app.push()
+                    // Включаем использование crumb в запросах
+                    def customHeaders = [[
+                        $class: 'StringParameterValue',
+                        name: 'Jenkins-Crumb',
+                        value: "${Jenkins.getInstance().crumbIssuer.crumb}"
+                    ]]
+                    
+                    // Пушим Docker-образ в Docker Hub
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
+                        docker.image("nikitakhs/app:latest").push()
                     }
                 }
             }
