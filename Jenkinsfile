@@ -15,7 +15,9 @@ pipeline {
                     // Авторизация в Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
                         // Сборка Docker-образа
-                        docker.image("nikitakhs/app").build()
+                        script {
+                            docker.image("nikitakhs/app").build()
+                        }
 
                         // Тегирование Docker-образа
                         docker.image("nikitakhs/app").tag("latest")
