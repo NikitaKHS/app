@@ -39,18 +39,21 @@ pipeline {
                 }
             }
         }
-// Включаем использование crumb в запросах
-def customHeaders = [[
-    $class: 'StringParameterValue',
-    name: 'Jenkins-Crumb',
-    value: "${Jenkins.instance.crumbIssuer.crumb}"
-]]
 
-// Ваша команда Docker push
-docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
-    docker.image("nikitakhs/app:latest").push()
-}
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    // Включаем использование crumb в запросах
+                    def customHeaders = [[
+                        $class: 'StringParameterValue',
+                        name: 'Jenkins-Crumb',
+                        value: "${Jenkins.instance.crumbIssuer.crumb}"
+                    ]]
 
+                    // Ваша команда Docker push
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
+                        docker.image("nikitakhs/app:latest").push()
+                    }
                 }
             }
         }
