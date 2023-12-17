@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'niktiakhs:nicita.xoxlov.65'
+        DOCKER_HUB_CREDENTIALS = 'nikita:nicita.xoxlov.65'
         JENKINS_URL = '84.201.134.218:8080'
     }
 
