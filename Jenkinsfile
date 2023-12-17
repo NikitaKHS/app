@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        registryCredential = 'nikitakhs' // Используйте ваш логин Docker Hub
-        sshCredential = '1' // Используйте ваш идентификатор учетных данных SSH
+        registryCredential = 'nikitakhs'
+        sshCredential = '1'
     }
     stages {
         stage('Checkout') {
@@ -14,9 +14,7 @@ pipeline {
             steps {
                 script {
                     def customImage = docker.build("nikitakhs/app")
-                    docker.withRegistry('https://registry.hub.docker.com', 'nikitakhs') {
-                        customImage.push()
-                    }
+                    customImage.push()
                 }
             }
         }
