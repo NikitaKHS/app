@@ -13,17 +13,18 @@ pipeline {
             steps {
                 script {
                     // Авторизация в Docker Hub
-                    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+                    withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         // Сборка Docker-образа
-                        script {
-                            docker.image("nikitakhs/app").build()
-                        }
+                        sh 'docker build -t nikitakhs/app .'
+
+                        // Авторизация в Docker Hub (опционально, если вы не используете Jenkins Credentials Plugin)
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
 
                         // Тегирование Docker-образа
-                        docker.image("nikitakhs/app").tag("latest")
+                        sh 'docker tag nikitakhs/app:latest nikitakhs/app:latest'
 
                         // Отправка Docker-образа в Docker Hub
-                        docker.image("nikitakhs/app").push()
+                        sh 'docker push nikitakhs/app:latest'
                     }
                 }
             }
@@ -33,10 +34,4 @@ pipeline {
                 script {
                     // Используем 1 вместо your-ssh-credentials
                     sshagent(['1']) {
-                        sh 'ssh -o StrictHostKeyChecking=no nikita@84.201.134.218 "docker-compose -f docker-compose.yml up -d"'
-                    }
-                }
-            }
-        }
-    }
-}
+                        sh 'ssh -o StrictHostKeyChecking=no nikita@84.201.134.218 "docker-compose -f docker-compose.yml up -d
