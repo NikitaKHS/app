@@ -39,15 +39,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Push to Docker Hub') {
-            steps {
-                script {
 // Включаем использование crumb в запросах
 def customHeaders = [[
     $class: 'StringParameterValue',
     name: 'Jenkins-Crumb',
-    value: "${Jenkins.getInstance().crumbIssuer.crumb}"
+    value: "${Jenkins.instance.crumbIssuer.crumb}"
 ]]
 
 // Ваша команда Docker push
