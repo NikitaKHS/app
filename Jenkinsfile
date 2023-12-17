@@ -47,7 +47,7 @@ pipeline {
                     def customHeaders = [[
                         $class: 'StringParameterValue',
                         name: 'Jenkins-Crumb',
-                        value: "${Jenkins.instance.crumbIssuer.crumb}"
+                        value: "${env.CRUMB}"
                     ]]
 
                     // Ваша команда Docker push
