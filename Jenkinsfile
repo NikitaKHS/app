@@ -11,10 +11,19 @@ pipeline {
             }
         }
         stage('Build and Push Docker Image') {
-            steps {
-                script {
-                    def customImage = docker.build("nikitakhs/app")
-                    customImage.push()
+    steps {
+        script {
+            // Авторизация в Docker Hub
+            docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
+                // Сборка Docker-образа
+                docker.image("nikitakhs/app").build()
+                
+                // Отправка Docker-образа в Docker Hub
+                docker.image("nikitakhs/app").push()
+            }
+        }
+    }
+}
                 }
             }
         }
