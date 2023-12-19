@@ -10,13 +10,15 @@ pipeline {
 
     stages {
         stage('Get Crumb') {
-            steps {
-                script {
-                    def crumb = sh(script: "curl -s -X GET http://${JENKINS_URL}/crumbIssuer/api/json --user ${JENKINS_USER}:${JENKINS_PASSWORD} | jq -r '.crumb'", returnStdout: true).trim()
-                    env.CRUMB = crumb
-                }
-            }
+    steps {
+        script {
+            def response = sh(script: "curl -s -X GET http://${JENKINS_URL}/crumbIssuer/api/json --user ${JENKINS_USER}:${JENKINS_PASSWORD}", returnStdout: true).trim()
+
+            def crumb = readJSON text: response
+            env.CRUMB = crumb.crumb
         }
+    }
+}
 
         stage('Print Crumb') {
             steps {
