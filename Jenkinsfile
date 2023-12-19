@@ -1,3 +1,5 @@
+@Grab(group='org.codehaus.groovy', module='groovy-json', version='3.0.9')
+
 pipeline {
     agent any
 
