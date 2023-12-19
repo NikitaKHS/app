@@ -4,13 +4,15 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = 'nikitakhs:nicita.xoxlov.65'
         JENKINS_URL = '212.233.97.208:8080'
+        JENKINS_USER = 'nikitakhs'
+        JENKINS_PASSWORD = 'Nicita65'
     }
 
     stages {
         stage('Get Crumb') {
             steps {
                 script {
-                    def crumb = sh(script: "curl -s 'http://${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'", returnStdout: true).trim()
+                    def crumb = sh(script: "curl -s -X GET http://${JENKINS_URL}/crumbIssuer/api/json --user ${JENKINS_USER}:${JENKINS_PASSWORD} | jq -r '.crumb'", returnStdout: true).trim()
                     env.CRUMB = crumb
                 }
             }
@@ -57,5 +59,5 @@ pipeline {
                 }
             }
         }
-    }
-}
+
+        stage
