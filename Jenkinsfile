@@ -52,7 +52,7 @@ pipeline {
 
                     // Ваша команда Docker push
                     docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
-                        docker.image("nikitakhs/app:latest").push(customHeaders: customHeaders)
+                        docker.image("nikitakhs/app:latest").push()
                     }
                 }
             }
