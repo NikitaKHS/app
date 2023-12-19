@@ -14,8 +14,8 @@ pipeline {
                 script {
                     def response = sh(script: "curl -s -X GET http://${JENKINS_URL}/crumbIssuer/api/json --user ${JENKINS_USER}:${JENKINS_PASSWORD}", returnStdout: true).trim()
 
-                    // Используем readJSON для обработки JSON-ответа
-                    def json = readJSON text: response
+                    // Обработка JSON-ответа
+                    def json = new groovy.json.JsonSlurperClassic().parseText(response)
                     env.CRUMB = json.crumb
                 }
             }
@@ -40,6 +40,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Ваш код для сборки Docker-образа
                     docker.build("nikitakhs/app:latest")
                 }
             }
@@ -62,5 +63,8 @@ pipeline {
                 }
             }
         }
+
+        // Добавим другие этапы вашего скрипта...
+
     }
 }
