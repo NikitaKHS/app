@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'nikita:nicita.xoxlov.65'
-        JENKINS_URL = '84.201.134.218:8080'
+        JENKINS_URL = '212.233.97.208:8080'
     }
 
     stages {
