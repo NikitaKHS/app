@@ -2,21 +2,17 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'nikitakhs:nicita.xoxlov.65'
+        DOCKER_HUB_CREDENTIALS = 'nikita:nicita.xoxlov.65'
         JENKINS_URL = '212.233.97.208:8080'
-        JENKINS_USER = 'nikitakhs'
-        JENKINS_PASSWORD = 'Nicita65'
     }
 
     stages {
         stage('Get Crumb') {
             steps {
                 script {
-                    def response = sh(script: "curl -s -X GET http://${JENKINS_URL}/crumbIssuer/api/json --user ${JENKINS_USER}:${JENKINS_PASSWORD}", returnStdout: true).trim()
-
-                    // Обработка JSON-ответа
-                    def json = readJSON text: response
-                    env.CRUMB = json.crumb
+                    // Получение Jenkins crumb для обеспечения безопасности запросов
+                    def crumb = sh(script: "curl -s 'http://${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'", returnStdout: true).trim()
+                    env.CRUMB = crumb
                 }
             }
         }
@@ -32,6 +28,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
+                    // Выполнение checkout из репозитория
                     checkout scm
                 }
             }
@@ -40,7 +37,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Ваш код для сборки Docker-образа
+                    // Сборка Docker-образа
                     docker.build("nikitakhs/app:latest")
                 }
             }
@@ -56,15 +53,12 @@ pipeline {
                         value: "${env.CRUMB}"
                     ]]
 
-                    // Ваша команда Docker push
+                    // Пуш Docker-образа на Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
                         docker.image("nikitakhs/app:latest").push()
                     }
                 }
             }
         }
-
-        // Добавим другие этапы вашего скрипта...
-
     }
 }
