@@ -14,8 +14,8 @@ pipeline {
                 script {
                     def response = sh(script: "curl -s -X GET http://${JENKINS_URL}/crumbIssuer/api/json --user ${JENKINS_USER}:${JENKINS_PASSWORD}", returnStdout: true).trim()
 
-                    // Обработка JSON-ответа
-                    def json = new groovy.json.JsonSlurperClassic().parseText(response)
+                    // Используем readJSON для обработки JSON-ответа
+                    def json = readJSON text: response
                     env.CRUMB = json.crumb
                 }
             }
