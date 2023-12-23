@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        stage('Run Locally') {
+        stage('Run on server') {
             steps {
                 script {
                     // Запуск контейнера локально с использованием порта 3030
