@@ -63,6 +63,7 @@ pipeline {
                 script {
                     // Перейти в директорию развертывания
                     sh 'npm install -g pm2'
+                    sh "cd app && pm2 start app.js"
                     sh "cd ${SERVER_DEPLOY_DIR}"
 
                     // Если репозиторий существует, обновить его
