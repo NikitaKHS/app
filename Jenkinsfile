@@ -59,11 +59,11 @@ pipeline {
             }
         }
 
-        stage('Run on server') {
+        stage('Run on Server') {
             steps {
                 script {
                     // Запуск контейнера локально с использованием порта 3030
-                    sh "docker run -p ${LOCAL_DEPLOY_PORT}:80 --name my-node-app ${DOCKER_IMAGE_NAME}"
+                    sh "docker run -d -p ${LOCAL_DEPLOY_PORT}:80 --name my-node-app ${DOCKER_IMAGE_NAME}"
                 }
             }
         }
