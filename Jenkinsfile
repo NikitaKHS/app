@@ -62,6 +62,7 @@ pipeline {
             steps {
                 script {
                     // Перейти в директорию развертывания
+                    sh 'npm install -g pm2'
                     sh "cd ${SERVER_DEPLOY_DIR}"
 
                     // Если репозиторий существует, обновить его
