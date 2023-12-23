@@ -4,11 +4,12 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = 'nikita:nicita.xoxlov.65'
         JENKINS_URL = '212.233.97.208:8080'
-        GIT_REPO_URL = 'https://github.com/NikitaKHS/app.git'
-        SERVER_DEPLOY_DIR = '/home/debian/my-node-app'
+        GIT_REPO_URL = 'https://github.com/NikitaKHS/app.git'  // Замените на ваш репозиторий
+        DOCKER_IMAGE_NAME = 'nikitakhs/app:latest'
+        LOCAL_DEPLOY_PORT = '3030'
     }
 
-     stages {
+    stages {
         stage('Get Crumb') {
             steps {
                 script {
@@ -37,7 +38,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("nikitakhs/app:latest")
+                    docker.build("${DOCKER_IMAGE_NAME}")
                 }
             }
         }
@@ -52,26 +53,17 @@ pipeline {
                     ]]
 
                     docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
-                        docker.image("nikitakhs/app:latest").push()
+                        docker.image("${DOCKER_IMAGE_NAME}").push()
                     }
                 }
             }
         }
 
-        stage('Deploy to Server') {
+        stage('Run on serser') {
             steps {
                 script {
-                    // Перейти в директорию развертывания
-                    sh 'npm install -g pm2'
-                    sh "cd app && pm2 start app.js"
-                    sh "cd ${SERVER_DEPLOY_DIR}"
-
-                    // Если репозиторий существует, обновить его
-                    // В противном случае клонировать репозиторий
-                    sh "[ -d app ] && git -C app pull || git clone ${GIT_REPO_URL} app"
-                    
-                    // Перейти в директорию 'app' и выполнить дополнительные шаги развертывания
-                    sh "cd app && npm install && pm2 restart app.js"
+                    // Запуск контейнера локально с использованием порта 3030
+                    sh "docker run -d -p ${LOCAL_DEPLOY_PORT}:80 --name my-node-app ${DOCKER_IMAGE_NAME}"
                 }
             }
         }
