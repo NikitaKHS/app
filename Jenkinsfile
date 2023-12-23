@@ -62,7 +62,7 @@ pipeline {
             steps {
                 script {
                     // Переход в директорию развертывания и обновление приложения
-                    sh "cd ${SERVER_DEPLOY_DIR} && git clone ${GIT_REPO_URL} && cd yourapp && npm install && pm2 restart app.js"
+                    sh "cd ${SERVER_DEPLOY_DIR} && git clone ${GIT_REPO_URL} && cd app && npm install && pm2 restart app.js"
                 }
             }
         }
