@@ -8,7 +8,7 @@ pipeline {
         SERVER_DEPLOY_DIR = '/home/debian/my-node-app'
     }
 
-    stages {
+     stages {
         stage('Get Crumb') {
             steps {
                 script {
