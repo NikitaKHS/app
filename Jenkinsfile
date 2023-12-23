@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = 'nikita:nicita.xoxlov.65'
         JENKINS_URL = '212.233.97.208:8080'
-        GIT_REPO_URL = 'https://github.com/NikitaKHS/app.git'  // Замените на ваш репозиторий
+        GIT_REPO_URL = 'https://github.com/NikitaKHS/app.git' 
         DOCKER_IMAGE_NAME = 'nikitakhs/app:latest'
         LOCAL_DEPLOY_PORT = '3030'
     }
@@ -63,7 +63,7 @@ pipeline {
             steps {
                 script {
                     // Запуск контейнера локально с использованием порта 3030
-                    sh "docker run -d -p ${LOCAL_DEPLOY_PORT}:80 --name my-node-app ${DOCKER_IMAGE_NAME}"
+                    sh "docker run -d -p ${LOCAL_DEPLOY_PORT}:80 --app ${DOCKER_IMAGE_NAME}"
                 }
             }
         }
