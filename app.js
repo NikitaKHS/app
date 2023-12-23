@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
  /_____/   U
 `;
 
-    res.send(`<pre>${dogArt}</pre><p>Это с3об51ачк1а61111</p>`);
+    res.send(`<pre>${dogArt}</pre><p>Это собачка</p>`);
 });
 
 app.listen(3000, () => {
