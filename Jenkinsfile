@@ -61,8 +61,15 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
-                    // Переход в директорию развертывания и обновление приложения
-                    sh "cd ${SERVER_DEPLOY_DIR} && git clone ${GIT_REPO_URL} && cd app && npm install && pm2 restart app.js"
+                    // Перейти в директорию развертывания
+                    sh "cd ${SERVER_DEPLOY_DIR}"
+
+                    // Если репозиторий существует, обновить его
+                    // В противном случае клонировать репозиторий
+                    sh "[ -d app ] && git -C app pull || git clone ${GIT_REPO_URL} app"
+                    
+                    // Перейти в директорию 'app' и выполнить дополнительные шаги развертывания
+                    sh "cd app && npm install && pm2 restart app.js"
                 }
             }
         }
